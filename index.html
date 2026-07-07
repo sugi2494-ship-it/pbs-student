@@ -58,7 +58,17 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1
 .sec ul{list-style:none}
 .sec li{font-size:14.5px;color:#37324a;padding:5px 0 5px 24px;position:relative;line-height:1.65}
 .sec li::before{content:"⭐";position:absolute;left:0;font-size:12px;top:7px}
-.tip{background:#EAF2FC;border-left:3px solid var(--blue);border-radius:8px;padding:11px 13px;font-size:13.8px;color:#274a6b;line-height:1.8}
+.mlist{list-style:none;margin-top:4px}
+.mlist li{font-size:14.3px;color:#37324a;padding:8px 0 8px 30px;position:relative;line-height:1.7;border-bottom:1px dashed var(--line)}
+.mlist li:last-child{border-bottom:none}
+.mlist li::before{content:"📌";position:absolute;left:0;top:8px;font-size:13px}
+.nlist{list-style:none;counter-reset:n;margin-top:4px}
+.nlist li{font-size:14.3px;color:#37324a;padding:8px 0 8px 34px;position:relative;line-height:1.7}
+.nlist li::before{counter-increment:n;content:counter(n);position:absolute;left:0;top:7px;width:22px;height:22px;background:var(--blue);color:#fff;border-radius:50%;font-size:12px;font-weight:900;display:grid;place-items:center}
+.tip{background:#EAF2FC;border-left:3px solid var(--blue);border-radius:8px;padding:11px 13px;font-size:13.8px;color:#274a6b;line-height:1.8;margin-top:8px}
+.worry{background:#FFF6E9;border-left:3px solid var(--yellow);border-radius:10px;padding:13px 15px;margin-top:6px}
+.worry .q{font-size:14px;font-weight:800;color:#9A6B12;margin-bottom:5px}
+.worry p{font-size:14px;color:#5b4a2a;line-height:1.85;margin:0}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
 .chips span{background:#EAF6FF;color:#0F5E8C;font-size:13.5px;font-weight:800;padding:8px 13px;border-radius:999px}
 .chips.act span{background:#F4F0FB;color:#5A3E8C}
@@ -80,7 +90,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1
 .print-only{display:none}
 @media print{ body{background:#fff}.no-print{display:none!important}.print-only{display:block!important}
   .wrap{max-width:100%;padding:0}.card{box-shadow:none;border:1px solid #e5e0f0;break-inside:avoid;margin:6px 0}
-  .hero,.bar .fill,.chips span,.more,.affirm,.tip{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .hero,.bar .fill,.chips span,.more,.affirm,.tip,.worry,.nlist li::before{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   @page{size:A4;margin:12mm} }
 </style>
 </head>
@@ -88,7 +98,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1
 <div class="top">
   <div class="badge">PBS 컬러강점 진로진단 · 48문항</div>
   <h1>나의 진로 컬러강점 결과</h1>
-  <p>종이 진단지의 <b>4색 엔진 점수</b>를 넣으면<br>나의 진로·성격·강점·공부법이 나와요</p>
+  <p>종이 진단지의 <b>4색 엔진 점수</b>를 넣으면<br>진로·성격·강점·공부법을 자세히 알려줘요</p>
 </div>
 <div class="wrap">
   <section id="s-input" class="screen active no-print">
@@ -110,45 +120,69 @@ const S = {
   RED:{name:'RED 추진 엔진',shortName:'추진',color:'#FF3366',type:'앞장서서 실행하는 리더형',quote:'일단 부딪히며 배운다',
     tags:['리더십','실행력','도전','목표 집중','주도성','경쟁심'],
     personality:'목표가 생기면 바로 움직이고, 경쟁과 도전에서 힘이 나는 실행형이에요. 결정이 빠르고 앞장서길 좋아하며, 어려운 상황에서 오히려 에너지가 솟아요.',
-    strengths:['생각을 바로 행동으로 옮기는 강한 실행력','팀을 이끌고 결정을 내리는 리더십','어려움에 굴하지 않는 도전 정신','목표를 향해 끝까지 밀어붙이는 집중력','위기 상황에서 침착하게 결단하는 힘'],
+    strengths:['생각을 바로 행동으로 옮기는 강한 실행력','팀을 이끌고 결정을 내리는 리더십','어려움에 굴하지 않는 도전 정신','목표를 향해 끝까지 밀어붙이는 집중력','위기 상황에서 침착하게 결단하는 힘','새로운 일을 두려워하지 않는 용기'],
     study:'목표와 마감을 정해 "미션"처럼 도전할 때 집중이 확 올라가요. 개념을 오래 외우기보다 문제풀이·기출·모의고사로 실전 감각을 쌓고 성취감을 얻는 방식이 잘 맞아요.',
-    studyTip:'집중 팁: 25분 몰입+5분 휴식(뽀모도로), 오늘의 목표량을 정해 게임처럼 클리어하기. 친구와 점수 경쟁·랭킹이 동기부여가 돼요.',
+    studyMethods:['오늘 할 분량을 "미션"으로 정하고 클리어하듯 끝내기','개념 정리는 짧게, 문제풀이·기출로 실전 감각 쌓기','25분 몰입 + 5분 휴식(뽀모도로)으로 짧고 강하게','친구와 점수·풀이 속도 경쟁으로 동기 만들기','끝낼 때마다 스스로 작은 보상 주기'],
+    subjectTips:'암기 과목은 "퀴즈 배틀"처럼 문제로 바꿔 풀고, 수학·과학은 많은 문제를 빠르게 풀며 유형을 몸에 익혀요. 긴 지문은 핵심만 먼저 훑고 문제부터 도전하는 방식이 잘 맞아요.',
+    examTip:'시험 전엔 "실전 모의고사 → 오답 정리" 사이클을 반복하고, 목표 점수를 눈에 보이게 적어두면 집중력이 올라가요.',
     friends:'앞장서서 모둠·팀을 이끌고 분위기를 주도해요. 내 뜻대로만 하기보다 친구 의견을 끝까지 듣고 배려하면, 모두가 따르는 진짜 신뢰받는 리더가 됩니다.',
-    majors:['경영·창업','경찰·군·소방','체육·스포츠','마케팅·영업','정치외교·행정','스포츠경영'],
+    majorWhy:'앞장서서 이끌고 목표를 이루는 걸 좋아해서, 사람·조직·프로젝트를 움직이는 계열에서 빛나요.',
+    majors:['경영·창업','경찰·군·소방','체육·스포츠','마케팅·영업','정치외교·행정','스포츠경영','호텔·관광경영'],
     activities:['학생회·동아리 회장','대회·공모전 도전','프로젝트 팀장'],
+    worryQ:'"하고 싶은 게 자꾸 바뀌어요"',
+    worryA:'괜찮아요. 추진형은 여러 도전을 통해 진짜 원하는 걸 찾아가는 타입이에요. 지금은 "결정"보다 "많이 시도"가 정답이에요. 작은 도전을 여러 개 해보면 방향이 저절로 좁혀져요.',
+    actions:['관심 분야 대회·공모전·동아리에 하나 도전하기','학생회·팀 리더 역할을 맡아 리더십 경험 쌓기','창업가·운동선수 등 관심 직업인의 인터뷰·브이로그 찾아보기','한 달 목표를 정해 이뤄보고 성취 경험을 기록하기'],
     grow:'급한 마음에 서두르다 실수하거나, 지는 걸 힘들어할 수 있어요. 속도 조절과 경청, "실패도 배움"이라는 태도를 익히면 리더십이 두 배로 단단해져요.',
     cheer:'나는 목표를 향해 앞장서는 실행하는 리더예요!'},
   YELLOW:{name:'YELLOW 관계 엔진',shortName:'관계',color:'#F5A623',type:'사람과 통하는 소통·표현형',quote:'함께할 때 가장 빛난다',
     tags:['소통','표현력','공감','사교성','긍정 에너지','창의'],
     personality:'사람들과 어울리며 에너지를 얻고, 밝게 표현하며 분위기를 이끄는 소통형이에요. 새로운 친구도 금방 사귀고 아이디어가 톡톡 나와요.',
-    strengths:['생각과 감정을 생동감 있게 전하는 소통·발표력','상대 마음을 잘 알아주는 따뜻한 공감','분위기를 밝히는 긍정 에너지와 영향력','톡톡 튀는 창의적 표현','누구와도 친해지는 폭넓은 사교성'],
+    strengths:['생각과 감정을 생동감 있게 전하는 소통·발표력','상대 마음을 잘 알아주는 따뜻한 공감','분위기를 밝히는 긍정 에너지와 영향력','톡톡 튀는 창의적 표현','누구와도 친해지는 폭넓은 사교성','사람들을 연결하고 이끄는 힘'],
     study:'혼자보다 친구와 토론하고 설명하며 배우는 협동학습이 최고예요. 배운 내용을 남에게 설명하거나 발표하면 이해가 확 깊어지고, 스터디그룹에서 힘이 나요.',
-    studyTip:'집중 팁: 스터디 짝·그룹을 만들고 "가르치듯 설명하기". 작은 목표를 이룰 때마다 칭찬·보상을 주면 오래 집중해요.',
+    studyMethods:['친구와 서로 문제 내고 설명하는 짝·그룹 공부','배운 내용을 "가르치듯" 말로 설명해보기','스토리·이미지·색깔로 재미있게 정리하기','작은 목표를 이룰 때마다 칭찬·보상으로 동기 유지','계획을 친구와 공유해 함께 지키기'],
+    subjectTips:'암기 과목은 친구와 퀴즈로, 어려운 개념은 이야기·비유로 바꿔 이해하면 쏙쏙 들어와요. 발표·토론·글쓰기가 있는 과목에서 특히 강점을 발휘해요.',
+    examTip:'혼자 조용히보다 스터디그룹에서 서로 점검하고, 계획을 친구와 공유해 함께 지키면 끝까지 해내요.',
     friends:'누구와도 잘 어울리는 분위기 메이커예요. 신날 때도 친구 이야기를 끝까지 듣고 조용한 친구도 먼저 챙기면, 신뢰가 더 깊어져요.',
-    majors:['교육·사범','방송·언론·미디어','광고·홍보·마케팅','관광·서비스','심리·상담','공연·예술'],
+    majorWhy:'사람과 소통하고 표현하는 걸 좋아해서, 사람을 만나고 가르치고 알리는 계열에서 빛나요.',
+    majors:['교육·사범','방송·언론·미디어','광고·홍보·마케팅','관광·서비스','심리·상담','공연·예술','사회·커뮤니케이션'],
     activities:['발표·토론·MC','방송부·동아리','봉사·행사 기획'],
+    worryQ:'"좋아하는 건 많은데 하나로 못 정하겠어요"',
+    worryA:'관계형은 호기심이 넓어서 그래요. 억지로 하나만 고르지 말고, 여러 활동을 경험하며 "사람들과 무엇을 할 때 가장 즐거운지" 관찰해 보세요. 그 지점이 진로의 힌트예요.',
+    actions:['발표·방송·봉사·행사 기획 등 사람과 함께하는 활동 경험하기','관심 직업인 인터뷰·유튜브를 보고 느낀 점 기록하기','동아리·팀 프로젝트에서 소통·리드 경험 쌓기','좋아하는 일을 SNS·블로그·영상으로 표현해보기'],
     grow:'재미를 좇다 시작한 일을 끝까지 못 맺을 수 있어요. 할 일을 작게 나눠 하나씩 마무리하는 습관과, 혼자 집중하는 시간을 함께 가지면 좋아요.',
     cheer:'나는 사람과 통하며 함께 빛나는 소통가예요!'},
   GREEN:{name:'GREEN 조화 엔진',shortName:'조화',color:'#00A878',type:'따뜻하게 돕는 배려·안정형',quote:'꾸준함이 가장 강하다',
     tags:['배려','성실','신뢰','안정','공감','인내'],
     personality:'친구를 챙기고 약속을 지키며 꾸준히 노력하는 안정형이에요. 다툰 친구를 조율하는 반의 평화지기이고, 맡은 일을 성실하게 책임져요.',
-    strengths:['상대 마음을 헤아리는 따뜻한 배려와 공감','서두르지 않고 끝까지 해내는 성실함과 인내','팀의 조화와 균형을 지키는 신뢰감','깊이 있게 들어주는 경청 능력','맡은 일을 책임지는 든든함'],
+    strengths:['상대 마음을 헤아리는 따뜻한 배려와 공감','서두르지 않고 끝까지 해내는 성실함과 인내','팀의 조화와 균형을 지키는 신뢰감','깊이 있게 들어주는 경청 능력','맡은 일을 책임지는 든든함','오래 관계를 지키는 진실함'],
     study:'정해진 루틴과 편안한 환경에서 꾸준히 할 때 실력이 차곡차곡 쌓여요. 벼락치기보다 매일 조금씩, 복습 위주로, 조용하고 안정된 공간이 집중을 도와요.',
-    studyTip:'집중 팁: 매일 같은 시간·자리에서 공부하는 루틴을 만들고, 계획표에 하나씩 지워가기. 큰 과제는 작은 단계로 나눠 꾸준히.',
+    studyMethods:['매일 같은 시간·자리에서 하는 꾸준한 루틴 만들기','큰 과제를 작은 단계로 나눠 하나씩 완성하기','복습 중심으로 반복하며 차곡차곡 쌓기','조용하고 편안한 나만의 공부 공간 만들기','이해될 때까지 반복하고 정리 노트 남기기'],
+    subjectTips:'벼락치기보다 매일 조금씩 꾸준히 할 때 실력이 안정적으로 올라가요. 이해가 될 때까지 반복하고, 정리·암기 과목에서 성실함이 큰 힘이 돼요.',
+    examTip:'시험 계획표를 미리 만들어 하루 분량을 정하고, 무리하지 않는 꾸준한 페이스로 준비하면 실수가 줄어요.',
     friends:'친구 마음을 잘 헤아리는 든든한 조력자예요. 배려하느라 참기만 하기보다 내 의견과 감정도 조금씩 표현하면 더 건강한 관계가 됩니다.',
-    majors:['교육·유아교육','간호·보건·의료','사회복지·상담','심리학','환경·생명과학','인사·행정'],
+    majorWhy:'사람과 생명을 돌보고 신뢰를 지키는 걸 좋아해서, 돕고 보살피고 가르치는 계열에서 빛나요.',
+    majors:['교육·유아교육','간호·보건·의료','사회복지·상담','심리학','환경·생명과학','인사·행정','재활·물리치료'],
     activities:['또래상담·멘토링','봉사활동','학급 도우미'],
+    worryQ:'"남들은 꿈이 확실한데 나만 모르는 것 같아요"',
+    worryA:'전혀 조급할 필요 없어요. 조화형은 천천히, 깊이 있게 자기 길을 찾는 타입이에요. 남과 비교하지 말고 "내가 누구를 도울 때 가장 뿌듯한지"를 떠올려 보면 방향이 보여요.',
+    actions:['또래상담·멘토링·봉사로 "돕는 경험" 쌓기','관심 직업(교사·간호·상담 등) 체험·인터뷰하기','꾸준히 해온 일 하나를 깊이 발전시키기','나의 강점·감사한 순간을 일기로 기록하기'],
     grow:'변화나 새로운 도전이 조금 두려울 수 있어요. 자기 의견을 말하고 때론 거절하는 용기, 작은 새 도전부터 시도하면 안정 위에 자신감이 더해져요.',
     cheer:'나는 친구를 지키고 꾸준히 성장하는 조력자예요!'},
   BLUE:{name:'BLUE 분석 엔진',shortName:'분석',color:'#0077B6',type:'깊이 파고드는 탐구·연구형',quote:'왜 그런지 끝까지 파고든다',
     tags:['논리력','탐구심','분석','체계','집중','정확성'],
     personality:'원리와 이유를 파고들고 계획적으로 공부하는 탐구형이에요. 조용히 몰입하며 깊이 이해하고, 관찰력이 뛰어나 남이 놓친 것도 발견해요.',
-    strengths:['핵심을 짚어내는 논리적 사고와 분석력','한 주제에 깊이 파고드는 탐구·집중력','계획을 세워 체계적으로 해내는 힘','정확성과 완성도에 대한 높은 기준','직관과 논리를 결합한 통찰력'],
+    strengths:['핵심을 짚어내는 논리적 사고와 분석력','한 주제에 깊이 파고드는 탐구·집중력','계획을 세워 체계적으로 해내는 힘','정확성과 완성도에 대한 높은 기준','직관과 논리를 결합한 통찰력','스스로 답을 찾아내는 자기주도력'],
     study:'답을 외우기보다 "왜 그런지" 스스로 탐구할 때 최고예요. 조용한 몰입 공간과 충분한 시간을 주고, 오답의 원리를 분석해 정리 노트를 만들면 실력이 깊어져요.',
-    studyTip:'집중 팁: "질문→예상→확인" 순서로 스스로 탐구, 방해 없는 조용한 공간에서 한 과목 깊이 파기. 개념을 그림·표로 구조화하기.',
+    studyMethods:['답을 외우기 전에 "왜 그런지" 원리부터 이해하기','오답의 원인을 분석해 나만의 정리 노트 만들기','한 과목·한 주제에 깊이 파고드는 몰입 시간 확보','개념을 그림·표·마인드맵으로 구조화하기','미리 계획을 세워 단계적으로 준비하기'],
+    subjectTips:'수학·과학은 원리와 증명 과정을 이해하면 응용이 쉬워져요. 암기 과목도 "왜 이렇게 됐는지" 배경·흐름으로 엮으면 오래 기억돼요. 조용한 공간에서 깊이 파는 방식이 최고예요.',
+    examTip:'벼락치기보다 미리 계획을 세워 단계적으로 준비하고, 헷갈리는 개념은 끝까지 파고들어 완전히 이해하고 넘어가요.',
     friends:'말보다 행동으로 챙기는 깊은 관계예요. 생각을 말로도 표현하고 친구의 기분을 함께 살피면 관계가 더 넓어져요.',
-    majors:['이공계·자연과학','의학·약학','법학','컴퓨터·AI·데이터','공학','경제·연구직'],
+    majorWhy:'원리를 파고들고 문제를 푸는 걸 좋아해서, 탐구하고 분석하고 만드는 계열에서 빛나요.',
+    majors:['이공계·자연과학','의학·약학','법학','컴퓨터·AI·데이터','공학','경제·연구직','건축·설계'],
     activities:['과학·수학 탐구대회','자유연구·프로젝트','코딩·발명'],
+    worryQ:'"내가 잘하는 건 알겠는데 뭘 해야 할지 모르겠어요"',
+    worryA:'분석형은 신중해서 결정을 미루기 쉬워요. 완벽한 진로를 한 번에 고르려 하지 말고, "관심 분야를 작게 실험"해 보세요. 해보면서 데이터가 쌓이면 판단이 훨씬 쉬워져요.',
+    actions:['관심 분야 책·다큐·강연으로 깊이 파보기','과학·수학·코딩 등 탐구 프로젝트나 대회에 참여하기','관심 직업의 실제 업무·필요 역량을 조사해 정리하기','전공 체험·직업 체험으로 "실제로 해보기"'],
     grow:'완벽하게 하려다 시작이 늦거나 혼자 하는 걸 편해할 수 있어요. "70%면 일단 시작"과 "함께하면 더 멀리 간다"를 익히면 강점이 더 빛나요.',
     cheer:'나는 깊이 파고들어 답을 찾는 탐구가예요!'}
 };
@@ -177,9 +211,7 @@ function showResult(){
   const ranked=[...ORDER].sort((a,b)=>scores[b]-scores[a]), top=ranked[0], d=S[top];
   const max=Math.max(...ORDER.map(c=>scores[c]),1); LAST={scores,ranked,top};
   const bars=ranked.map(c=>{ const s=scores[c],pct=Math.round(s/max*100);
-    return `<div class="bar"><div class="bd" style="background:${S[c].color}">${c[0]}</div><div class="bt">
-      <div class="n"><span>${c} · ${S[c].shortName}</span><span>${s}점</span></div>
-      <div class="track"><div class="fill" style="width:${pct}%;background:${S[c].color}"></div></div></div></div>`;}).join('');
+    return `<div class="bar"><div class="bd" style="background:${S[c].color}">${c[0]}</div><div class="bt"><div class="n"><span>${c} · ${S[c].shortName}</span><span>${s}점</span></div><div class="track"><div class="fill" style="width:${pct}%;background:${S[c].color}"></div></div></div></div>`;}).join('');
   document.getElementById('s-result').innerHTML=`
     <div class="hero" style="background:linear-gradient(150deg,${d.color},${shade(d.color)})">
       <div class="kicker">나의 1순위 엔진</div><h2>${d.name}</h2>
@@ -187,22 +219,27 @@ function showResult(){
     <div class="card"><h2>🎨 나의 엔진 점수</h2>
       <p class="sub" style="margin-bottom:8px">1순위 <b>${d.shortName}</b> · 2순위 <b>${S[ranked[1]].shortName}</b> 조합이 나를 나타내요.</p>${bars}</div>
     <div class="card">
-      <div class="sec"><h3>🧭 나의 성격</h3><p>${d.personality}</p>
-        <div class="chips act">${d.tags.map(t=>`<span>${t}</span>`).join('')}</div></div>
-      <div class="sec"><h3>🌟 나의 강점</h3><ul>${d.strengths.map(s=>`<li>${s}</li>`).join('')}</ul></div>
-      <div class="sec"><h3>📚 나에게 맞는 공부·학습법</h3><p>${d.study}</p><div class="tip">${d.studyTip}</div></div>
+      <div class="sec"><h3>🧭 나의 성격</h3><p>${d.personality}</p><div class="chips act">${d.tags.map(t=>`<span>${t}</span>`).join('')}</div></div>
+      <div class="sec"><h3>🌟 나의 강점</h3><ul>${d.strengths.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    </div>
+    <div class="card">
+      <div class="sec"><h3>📚 나에게 맞는 공부·학습법</h3><p>${d.study}</p><ul class="mlist">${d.studyMethods.map(m=>`<li>${m}</li>`).join('')}</ul></div>
+      <div class="sec"><h3>📝 과목별·시험 전략</h3><p>${d.subjectTips}</p><div class="tip">🗓️ 시험 대비 · ${d.examTip}</div></div>
+    </div>
+    <div class="card">
+      <div class="sec"><h3>🎯 어울리는 진로·전공</h3><p>${d.majorWhy}</p><div class="chips">${d.majors.map(j=>`<span>${j}</span>`).join('')}</div><div style="margin-top:10px"><b style="font-size:14px">🎒 추천 활동</b><div class="chips act" style="margin-top:6px">${d.activities.map(a=>`<span>${a}</span>`).join('')}</div></div></div>
+      <div class="sec"><h3>💭 진로 고민, 이렇게 풀어요</h3><div class="worry"><div class="q">${d.worryQ}</div><p>${d.worryA}</p></div></div>
+      <div class="sec"><h3>✅ 지금 해보면 좋은 것</h3><ul class="nlist">${d.actions.map(a=>`<li>${a}</li>`).join('')}</ul></div>
       <div class="sec"><h3>🤝 친구·대인관계</h3><p>${d.friends}</p></div>
-      <div class="sec"><h3>🎯 어울리는 진로·전공</h3><div class="chips">${d.majors.map(j=>`<span>${j}</span>`).join('')}</div>
-        <div style="margin-top:10px"><b style="font-size:14px">🎒 추천 활동</b><div class="chips act" style="margin-top:6px">${d.activities.map(a=>`<span>${a}</span>`).join('')}</div></div></div>
       <div class="sec"><h3>💗 성장 포인트</h3><p>${d.grow}</p></div>
       <div class="affirm">"${d.cheer}"</div>
-      <div class="sec"><h3>📖 학문적 근거</h3><p style="font-size:13px;color:var(--soft)">PBS 컬러강점은 괴테 색채론·칼 융 분석심리학·막스 뤼셔 컬러심리·DISC 행동이론을 통합한 4엔진 모델입니다. 공부법 제안은 가드너의 다중지능·브루너 발견학습·비고츠키 사회적 학습을, 성장 관점은 캐럴 드웩의 성장 마인드셋을 참고했습니다.</p></div>
+      <div class="sec"><h3>📖 학문적 근거</h3><p style="font-size:13px;color:var(--soft)">PBS 컬러강점은 괴테 색채론·칼 융 분석심리학·막스 뤼셔 컬러심리·DISC 행동이론을 통합한 4엔진 모델입니다. 공부법 제안은 가드너의 다중지능·브루너 발견학습·비고츠키 사회적 학습을, 진로 탐색은 존 홀랜드(RIASEC) 진로이론·크럼볼츠의 계획된 우연을, 성장 관점은 캐럴 드웩의 성장 마인드셋을 참고했습니다.</p></div>
     </div>
     <div class="card no-print">
       <h2>💜 오늘 진단, 어땠나요?</h2>
       <p class="sub">별점과 소감을 남기면 결과를 PDF로 저장할 수 있어요 📄</p>
       <div class="field"><label>⭐ 별점</label><div class="stars" id="stars">${[1,2,3,4,5].map(n=>`<span data-n="${n}" onclick="setStar(${n})">★</span>`).join('')}</div></div>
-      <div class="field"><label>💬 오늘 알게 된 점·느낀 점</label><textarea id="fb" placeholder="예: 내 강점과 어울리는 진로를 알게 됐어요 :)"></textarea></div>
+      <div class="field"><label>💬 오늘 알게 된 점·느낀 점</label><textarea id="fb" placeholder="예: 내 강점과 어울리는 진로, 공부법을 알게 됐어요 :)"></textarea></div>
       <div class="field"><label>📷 사진 첨부 <span style="color:var(--muted);font-weight:600">(선택)</span></label><input type="file" accept="image/*" onchange="pickImg(this)"><div id="imgprev"></div></div>
       <button class="btn" onclick="savePDF()">📄 소감 남기고 결과 PDF 받기</button>
       <p class="hint">버튼을 누르면 인쇄 창이 열려요. "PDF로 저장"을 고르면 돼요.</p>
@@ -211,7 +248,6 @@ function showResult(){
     <div class="more no-print">
       <div class="k">MORE</div><h3>더 자세히 알고 싶다면</h3>
       <p>더 깊은 진단이나 진로·강점 코칭이 궁금하다면 이어가 보세요.</p>
-      <!-- ▼ 링크는 확정 후 교체하세요 ▼ -->
       <a class="p" href="https://www.pbscolor.com" target="_blank" rel="noopener">🎨 최해숙 컬러강점 · 프로그램 보기</a>
       <a class="o" href="https://choisite.vercel.app/book48.html" target="_blank" rel="noopener">✨ 책 48문항 무료 진단</a>
     </div>
@@ -232,10 +268,7 @@ function pickImg(input){ const f=input.files&&input.files[0]; if(!f)return; cons
     _fbImg=c.toDataURL('image/jpeg',.75); document.getElementById('imgprev').innerHTML=`<img src="${_fbImg}">`;
   };img.src=e.target.result;}; rd.readAsDataURL(f); }
 function savePDF(){ const fb=(document.getElementById('fb').value||'').trim(), pf=document.getElementById('print-fb'), d=S[LAST.top];
-  pf.innerHTML=`<div class="card"><h2>💜 나의 소감</h2><p style="font-size:13px;color:#524F6A">별점: ${'★'.repeat(_star||0)}${'☆'.repeat(5-(_star||0))}</p>
-    ${fb?`<p style="margin-top:6px;font-size:15px">${esc(fb)}</p>`:''}
-    ${_fbImg?`<img src="${_fbImg}" style="max-width:100%;max-height:300px;border-radius:12px;margin-top:8px">`:''}
-    <p style="margin-top:10px;font-size:13px;color:#8A87A6">PBS 컬러강점 진로진단 · 나의 1순위 엔진은 ${d.name}!</p></div>`;
+  pf.innerHTML=`<div class="card"><h2>💜 나의 소감</h2><p style="font-size:13px;color:#524F6A">별점: ${'★'.repeat(_star||0)}${'☆'.repeat(5-(_star||0))}</p>${fb?`<p style="margin-top:6px;font-size:15px">${esc(fb)}</p>`:''}${_fbImg?`<img src="${_fbImg}" style="max-width:100%;max-height:300px;border-radius:12px;margin-top:8px">`:''}<p style="margin-top:10px;font-size:13px;color:#8A87A6">PBS 컬러강점 진로진단 · 나의 1순위 엔진은 ${d.name}!</p></div>`;
   toast('결과지를 PDF로 저장해요 📄'); setTimeout(()=>window.print(),350); }
 function esc(s){ return s.replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
 function restart(){ document.getElementById('s-result').classList.remove('active');
